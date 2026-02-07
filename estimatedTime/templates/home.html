@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking EAFIT</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body { 
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #f5f5f5; 
+        }
+
+        header { 
+            background-color: #03045e; 
+            color: white; 
+            text-align: center;
+            padding: 25px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+
+        .parking-grid { display: flex; gap: 25px; justify-content: center; flex-wrap: wrap; }
+
+        .parking-card { 
+            background: white; 
+            border: none; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 12px; 
+            width: 280px; 
+            text-align: center; 
+            overflow: hidden; 
+            transition: transform 0.2s;
+        }
+
+        .parking-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Estilo para las imágenes */
+        .image-placeholder { 
+            width: 100%; 
+            height: 150px; 
+            object-fit: cover; /* Ajusta la imagen al tamaño del contenedor */
+            border-radius: 12px 12px 0 0;
+        }
+
+        .parking-card h2 { 
+            font-size: 18px; 
+            margin: 20px 0 10px; 
+            color: #003366; 
+            font-weight: 700;
+        }
+
+        .tiempo-espera { 
+            font-size: 16px; 
+            margin-bottom: 20px; 
+            color: #555;       
+            font-weight: 600; 
+        }
+
+        .tiempo-numero { 
+            font-weight: 800; 
+            font-size: 20px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+    </style>
+</head>
+
+<body>
+    
+    <header>
+        <h1>PARKING EAFIT</h1>
+    </header>
+
+    <div class="container">
+        <div class="parking-grid">
+
+            <div class="parking-card">
+                <img src="{% static 'estimatedTime/ingenieria.jpg' %}" alt="Parqueadero Ingeniería" class="image-placeholder">
+                <h2>Parqueadero Ingeniería</h2>
+                <p class="tiempo-espera">Tiempo de espera: <span class="tiempo-numero">{{ ingenieria_TiempoDeEspera }}</span> minutos</p>
+            </div>
+
+            <div class="parking-card">
+                <img src="{% static 'estimatedTime/central.jpg' %}" alt="Parqueadero Central" class="image-placeholder">
+                <h2>Parqueadero Central</h2>
+                <p class="tiempo-espera">Tiempo de espera: <span class="tiempo-numero">{{ central_TiempoDeEspera }}</span> minutos</p>
+            </div>
+
+            <div class="parking-card">
+                <img src="{% static 'estimatedTime/idiomas.jpg' %}" alt="Parqueadero Idiomas" class="image-placeholder">
+                <h2>Parqueadero Idiomas</h2>
+                <p class="tiempo-espera">Tiempo de espera: <span class="tiempo-numero">{{ idiomas_TiempoDeEspera }}</span> minutos</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const contadores = document.querySelectorAll('.tiempo-numero');
+            
+            const MAX_TIEMPO = 120; // Definimos un tiempo máximo para normalizar
+
+            contadores.forEach(span => {
+                let cantidad = parseInt(span.textContent);
+                if (isNaN(cantidad)) return;
+
+                let valorNormalizado = Math.max(0, Math.min(cantidad, MAX_TIEMPO));
+
+                // Invertimos: tiempo bajo = verde (120), tiempo alto = rojo (0)
+                let hue = ((MAX_TIEMPO - valorNormalizado) / MAX_TIEMPO) * 120;
+
+                span.style.color = `hsl(${hue}, 90%, 35%)`;
+            });
+        });
+    </script>
+
+</body>
+</html>
