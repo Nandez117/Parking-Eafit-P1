@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PARKING EAFIT</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body { 
+            font-family: 'Times New Roman', Times, serif;  
+            background-color: #f5f5f5; 
+        }
+
+        header { 
+            background-color: #003366; 
+            color: white; 
+            text-align: center;     
+            padding: 25px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-weight: 800; 
+            letter-spacing: 1px;
+        }
+
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+
+        .parking-grid { display: flex; gap: 25px; justify-content: center; flex-wrap: wrap; }
+
+        .parking-card { 
+            background: white; 
+            border: none; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+            border-radius: 12px; 
+            width: 280px; 
+            text-align: center; 
+            overflow: hidden; 
+            transition: transform 0.2s;
+        }
+
+        .parking-card:hover {
+            transform: translateY(-5px); 
+        }
+
+        .image-placeholder { 
+            width: 100%; 
+            height: 150px; 
+            background-color: #e0e0e0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #757575; 
+            font-size: 14px; 
+            font-weight: 600;
+        }
+
+        .parking-card h2 { 
+            font-size: 18px; 
+            margin: 20px 0 10px; 
+            color: #003366; 
+            font-weight: 700;
+        }
+
+        .disponibles { 
+            font-size: 16px; 
+            margin-bottom: 20px; 
+            color: #555; 
+        }
+
+        .disponibles span { 
+            font-weight: 800; 
+            font-size: 22px; /* Hacemos el número más grande */
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+    </style>
+</head>
+
+<body>
+    
+    <header>
+        <h1>PARKING EAFIT</h1>
+    </header>
+
+    <div class="container">
+        <div class="parking-grid">
+
+            <div class="parking-card">
+                <div class="image-placeholder">IMAGE</div>
+                <h2>Parqueadero Ingeniería</h2>
+                <p class="disponibles">Disponibles: <span class="cupo-numero">{{ ingenieria_disponibles }}</span></p>
+            </div>
+
+            <div class="parking-card">
+                <div class="image-placeholder">IMAGE</div>
+                <h2>Parqueadero Central</h2>
+                <p class="disponibles">Disponibles: <span class="cupo-numero">{{ central_disponibles }}</span></p>
+            </div>
+
+            <div class="parking-card">
+                <div class="image-placeholder">IMAGE</div>
+                <h2>Parqueadero Idiomas</h2>
+                <p class="disponibles">Disponibles: <span class="cupo-numero">{{ idiomas_disponibles }}</span></p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const contadores = document.querySelectorAll('.cupo-numero');
+            
+            const MAX_CUPO = 100; 
+
+            contadores.forEach(span => {
+                let cantidad = parseInt(span.textContent);
+                if (isNaN(cantidad)) return;
+
+                let valorNormalizado = Math.max(0, Math.min(cantidad, MAX_CUPO));
+
+                let hue = (valorNormalizado / MAX_CUPO) * 120;
+
+                span.style.color = `hsl(${hue}, 90%, 35%)`;
+            });
+        });
+    </script>
+
+</body>
+</html>
