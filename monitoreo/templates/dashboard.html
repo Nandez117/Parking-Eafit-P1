@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PARKING EAFIT</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f2f4f7;
+        }
+
+        header {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* GRID DEL DASHBOARD */
+        .parking-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* TARJETA */
+        .parking-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* HEADER DE CADA PARQUEADERO */
+        .image-placeholder {
+            height: 80px;
+            background-color: #003366;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .card-body {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card-body h2 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #003366;
+        }
+
+        .disponibles {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .disponibles span {
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .ocupados {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 15px;
+        }
+
+        /* ESTADO */
+        .estado {
+            font-size: 15px;
+            font-weight: 800;
+            padding: 8px;
+            border-radius: 8px;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .estado.disponible {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .estado.lleno {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    PARKING EAFIT
+</header>
+
+<div class="container">
+    <div class="parking-grid">
+
+        <!-- INGENIERÍA -->
+        <div class="parking-card">
+            <div class="image-placeholder">INGENIERÍA</div>
+            <div class="card-body">
+                <h2>Parqueadero Ingeniería</h2>
+
+                <p class="disponibles">
+                    Disponibles:
+                    <span class="cupo-numero">{{ parqueaderos.ingenieria.disponibles }}</span>
+                </p>
+
+                <p class="ocupados">
+                    Ocupados: {{ parqueaderos.ingenieria.ocupados }}
+                </p>
+
+                <div class="estado"
+                     data-disponibles="{{ parqueaderos.ingenieria.disponibles }}">
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTRAL -->
+        <div class="parking-card">
+            <div class="image-placeholder">CENTRAL</div>
+            <div class="card-body">
+                <h2>Parqueadero Central</h2>
+
+                <p class="disponibles">
+                    Disponibles:
+                    <span class="cupo-numero">{{ parqueaderos.central.disponibles }}</span>
+                </p>
+
+                <p class="ocupados">
+                    Ocupados: {{ parqueaderos.central.ocupados }}
+                </p>
+
+                <div class="estado"
+                     data-disponibles="{{ parqueaderos.central.disponibles }}">
+                </div>
+            </div>
+        </div>
+
+        <!-- IDIOMAS -->
+        <div class="parking-card">
+            <div class="image-placeholder">IDIOMAS</div>
+            <div class="card-body">
+                <h2>Parqueadero Idiomas</h2>
+
+                <p class="disponibles">
+                    Disponibles:
+                    <span class="cupo-numero">{{ parqueaderos.idiomas.disponibles }}</span>
+                </p>
+
+                <p class="ocupados">
+                    Ocupados: {{ parqueaderos.idiomas.ocupados }}
+                </p>
+
+                <div class="estado"
+                     data-disponibles="{{ parqueaderos.idiomas.disponibles }}">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.estado').forEach(estado => {
+        const disponibles = parseInt(estado.dataset.disponibles);
+
+        if (disponibles > 0) {
+            estado.textContent = "DISPONIBLE";
+            estado.classList.add("disponible");
+        } else {
+            estado.textContent = "LLENO";
+            estado.classList.add("lleno");
+        }
+    });
+});
+</script>
+
+</body>
+</html>
