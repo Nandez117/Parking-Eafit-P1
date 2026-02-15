@@ -1,24 +1,25 @@
 # Parking-Eafit-P1
-# Eafit Parking – Sistema de Monitoreo
+# EAFIT Parking – Monitoring System
 
-Proyecto desarrollado en **Django** como parte del curso **Proyecto 1** en la Universidad EAFIT.  
-El sistema permite gestionar y monitorear información relacionada con el parqueadero, ofreciendo una base sólida para futuras funcionalidades como control de vehículos, visualización de datos y administración.
-
----
-
-## 📌 Descripción del Proyecto
-
-**Eafit Parking** es una aplicación web desarrollada con **Python y Django**, cuyo objetivo es centralizar y visualizar información del sistema de parqueaderos de la universidad.  
-
-Actualmente, el proyecto cuenta con:
-- Estructura base de un proyecto Django
-- Aplicación `monitoreo`
-- Plantilla inicial de dashboard
-- Configuración funcional del entorno
+This project was developed using **Django** as part of the **Project 1** course at **EAFIT University**.  
+The system helps to manage and monitor parking information and creates a solid base for future features like vehicle control, data visualization, and administration.
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## 📌 Project Description
+
+**EAFIT Parking** is a web application built with **Python and Django**.  
+Its main goal is to show and organize information about the university parking system.
+
+At this moment, the project includes:
+- Basic Django project structure
+- A main app called `monitoreo`
+- An initial dashboard page
+- A working project configuration
+
+---
+
+## 🛠️ Technologies Used
 
 - **Python 3**
 - **Django**
@@ -28,58 +29,53 @@ Actualmente, el proyecto cuenta con:
 
 ---
 
-## 📂 Estructura del Proyecto
+## 📂 Project Structure
 
 EafitParking/
 │
-├── config/ # Configuración principal del proyecto Django
-│ ├── settings.py
-│ ├── urls.py
-│ ├── asgi.py
-│ └── wsgi.py
+├── config/                 # Main Django configuration
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   └── wsgi.py
 │
-├── monitoreo/ # Aplicación principal
-│ ├── migrations/
-│ ├── templates/
-│ │ └── dashboard.html
-│ ├── admin.py
-│ ├── apps.py
-│ ├── models.py
-│ ├── views.py
-│ └── tests.py
+├── monitoreo/              # Main application
+│   ├── migrations/
+│   ├── templates/
+│   │   └── dashboard.html
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── views.py
+│   └── tests.py
 │
-├── db.sqlite3 # Base de datos
-├── manage.py # Archivo principal del proyecto
-└── venv/ # Entorno virtual
+├── db.sqlite3              # Database
+├── manage.py               # Main project file
+└── venv/                   # Virtual environment
 
+---
+
+## 👩‍💻 Author
+
+**Isabella Ocampo Sánchez**  
+EAFIT University – Systems Engineering
 
 ---
 
-👩‍💻 Autora
+## 📌 Project Status
 
-Isabella Ocampo Sánchez
-
-Universidad EAFIT - Ingeniería de Sistemas
-
----
-📌 Estado del Proyecto
-
-*Dashboard funcional
-*Visualización de cupos disponibles y ocupados
-*Estructura base de Django correctamente configurada
+- Dashboard is working
+- Shows available and occupied parking spaces
+- Django project structure is correctly set
 
 ---
-## ▶️ Ejecución del Proyecto
 
-1. Clonar el repositorio
+## ▶️ How to Run the Project
+
+1. Clone the repository
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone <REPOSITORY_URL>
 cd EafitParking
 venv\Scripts\activate
 pip install django
 python manage.py runserver
-http://127.0.0.1:8000/
-
-
-
-
