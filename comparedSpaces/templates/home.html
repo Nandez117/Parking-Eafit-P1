@@ -1,0 +1,236 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking EAFIT - Espacios Disponibles</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body { 
+            font-family: 'Montserrat', 'Times New Roman', Times, serif;
+            background-color: #f5f5f5; 
+        }
+
+        header { 
+            background-color: #03045e; 
+            color: white; 
+            text-align: center;
+            padding: 25px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-weight: 800;
+            letter-spacing: 1px;
+            font-size: 28px;
+        }
+
+        /* Se eliminó el estilo de header p porque ya no se usa */
+
+        .container { 
+            max-width: 1100px; 
+            margin: 40px auto; 
+            padding: 0 20px; 
+        }
+
+        .parking-grid { 
+            display: flex; 
+            gap: 25px; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+        }
+
+        .parking-card { 
+            background: white; 
+            border: none; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 12px; 
+            width: 320px; 
+            text-align: center; 
+            overflow: hidden; 
+            transition: transform 0.2s;
+            position: relative;
+        }
+
+        .parking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .ranking-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ffd700;
+            color: #03045e;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 14px;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .image-placeholder { 
+            width: 100%; 
+            height: 180px; 
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .parking-card h2 { 
+            font-size: 20px; 
+            margin-bottom: 15px; 
+            color: #03045e; 
+            font-weight: 700;
+        }
+
+        .disponibilidad-container {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .espacios-info { 
+            font-size: 32px; 
+            font-weight: 800; 
+            margin-bottom: 5px;
+        }
+
+        .espacios-total {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .porcentaje {
+            font-size: 18px;
+            font-weight: 600;
+            padding: 8px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .barra-progreso {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .barra-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .recomendacion {
+            font-size: 13px;
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <header>
+        <h1>PARKING EAFIT</h1>
+    </header>
+
+    <div class="container">
+        <div class="parking-grid">
+            {% for parking in parkings %}
+            <div class="parking-card">
+                {% if forloop.counter == 1 %}
+                <div class="ranking-badge">⭐ Más disponible</div>
+                {% endif %}
+                
+                <img src="{% static parking.imagen %}" alt="{{ parking.nombre }}" class="image-placeholder">
+                
+                <div class="card-content">
+                    <h2>{{ parking.nombre }}</h2>
+                    
+                    <div class="disponibilidad-container">
+                        <div class="espacios-info espacios-num">
+                            {{ parking.disponibles }}
+                        </div>
+                        <div class="espacios-total">
+                            de {{ parking.totales }} espacios disponibles
+                        </div>
+                        
+                        <div class="porcentaje porcentaje-box">
+                            {{ parking.porcentaje }}% disponible
+                        </div>
+                        
+                        <div class="barra-progreso">
+                            <div class="barra-fill barra-color" style="width: {{ parking.porcentaje|default:0 }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="recomendacion texto-recomendacion"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const cards = document.querySelectorAll('.parking-card');
+            
+            cards.forEach(function(card) {
+                // Leemos el texto del porcentaje (ej: "82.5% disponible")
+                const porcentajeText = card.querySelector('.porcentaje-box').textContent;
+                const porcentaje = parseFloat(porcentajeText);
+                
+                const espaciosEl = card.querySelector('.espacios-num');
+                const porcentajeEl = card.querySelector('.porcentaje-box');
+                const barraEl = card.querySelector('.barra-color');
+                const recomendacionEl = card.querySelector('.texto-recomendacion');
+                
+                let color = '';
+                let recomendacion = '';
+                
+                // Lógica de colores semáforo
+                if (porcentaje >= 50) {
+                    color = 'hsl(120, 70%, 45%)'; // Verde
+                    recomendacion = '✅ Buena disponibilidad';
+                } else if (porcentaje >= 20) {
+                    color = 'hsl(45, 100%, 45%)'; // Amarillo/Naranja
+                    recomendacion = '⚠️ Disponibilidad media';
+                } else {
+                    color = 'hsl(0, 70%, 50%)'; // Rojo
+                    recomendacion = '🚫 Baja disponibilidad';
+                }
+                
+                // Aplicar estilos
+                espaciosEl.style.color = color;
+                porcentajeEl.style.background = color;
+                porcentajeEl.style.color = 'white';
+                barraEl.style.background = color;
+                recomendacionEl.textContent = recomendacion;
+                recomendacionEl.style.color = color;
+            });
+        })();
+    </script>
+
+</body>
+</html>
