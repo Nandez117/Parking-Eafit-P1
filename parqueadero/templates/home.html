@@ -3,134 +3,701 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PARKING EAFIT</title>
-    
+    <title>PARKING EAFIT - Sistema de Monitoreo en Tiempo Real</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body { 
-            font-family: 'Times New Roman', Times, serif;  
-            background-color: #f5f5f5; 
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f6fa;
+            color: #1a1a2e;
         }
 
-        header { 
-            background-color: #003366; 
-            color: white; 
-            text-align: center;     
-            padding: 25px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        /* ===== TOP HEADER ===== */
+        .top-header {
+            background-color: #1a2744;
+            color: #fff;
+            text-align: center;
+            padding: 22px 20px 14px;
         }
-        
-        header h1 {
-            font-weight: 800; 
-            letter-spacing: 1px;
+        .top-header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
         }
-
-        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
-
-        .parking-grid { display: flex; gap: 25px; justify-content: center; flex-wrap: wrap; }
-
-        .parking-card { 
-            background: white; 
-            border: none; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
-            border-radius: 12px; 
-            width: 280px; 
-            text-align: center; 
-            overflow: hidden; 
-            transition: transform 0.2s;
+        .top-header .logo-icon {
+            width: 48px;
+            height: 48px;
+            background-color: #f0a500;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
-
-        .parking-card:hover {
-            transform: translateY(-5px); 
+        .top-header .logo-icon svg { width: 28px; height: 28px; }
+        .top-header-text h1 {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            line-height: 1.2;
         }
-
-        .image-placeholder { 
-            width: 100%; 
-            height: 150px; 
-            background-color: #e0e0e0; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: #757575; 
-            font-size: 14px; 
-            font-weight: 600;
+        .top-header-text p {
+            font-size: 13px;
+            opacity: 0.7;
+            font-weight: 400;
         }
 
-        .parking-card h2 { 
-            font-size: 18px; 
-            margin: 20px 0 10px; 
-            color: #003366; 
-            font-weight: 700;
+        /* ===== LIVE BANNER ===== */
+        .live-banner {
+            background-color: #111c33;
+            color: #fff;
+            text-align: center;
+            padding: 8px 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-
-        .disponibles { 
-            font-size: 16px; 
-            margin-bottom: 20px; 
-            color: #555; 
-        }
-
-        .disponibles span { 
-            font-weight: 800; 
-            font-size: 22px; /* Hacemos el número más grande */
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #22c55e;
+            border-radius: 50%;
             display: inline-block;
-            vertical-align: middle;
+            animation: pulse-dot 1.5s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .live-icon svg { width: 18px; height: 18px; }
+        .live-banner span { font-weight: 600; letter-spacing: 1px; }
+
+        /* ===== NAV BAR ===== */
+        .nav-bar {
+            background-color: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 0;
+        }
+        .nav-brand .brand-icon {
+            width: 38px;
+            height: 38px;
+            background-color: #1a5276;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-brand .brand-icon svg { width: 22px; height: 22px; }
+        .nav-brand span {
+            font-weight: 800;
+            font-size: 16px;
+            color: #1a2744;
+            letter-spacing: 0.5px;
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 0;
+            list-style: none;
+        }
+        .nav-tabs li a {
+            display: block;
+            padding: 16px 18px;
+            text-decoration: none;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .nav-tabs li a:hover {
+            color: #1a2744;
+        }
+        .nav-tabs li a.active {
+            color: #1a2744;
+            font-weight: 600;
+            border-bottom: 2px solid #1a2744;
+        }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-right .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a2744;
+        }
+        .nav-right .user-icon {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #e5e7eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-right .user-icon svg { width: 18px; height: 18px; color: #64748b; }
+        .nav-right .logout-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+        }
+        .nav-right .logout-btn svg { width: 20px; height: 20px; }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 30px 30px 60px;
         }
 
+        /* ===== SECTION HEADER ===== */
+        .section-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 18px;
+        }
+        .section-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2744;
+            margin-bottom: 4px;
+        }
+        .section-header p {
+            font-size: 14px;
+            color: #64748b;
+        }
+        .updated-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 13px;
+            color: #374151;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .updated-badge .green-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+        }
+
+        /* ===== PARKING GRID ===== */
+        .parking-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        /* ===== PARKING CARD ===== */
+        .parking-card {
+            background: #fff;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .parking-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+        .card-image {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+        }
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-image .availability-tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .availability-tag.low {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        .availability-tag.medium {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .availability-tag.high {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        .availability-tag.best {
+            background-color: #fff;
+            color: #1a2744;
+            border: 1px solid #e5e7eb;
+        }
+        .card-body {
+            padding: 18px 20px 22px;
+        }
+        .card-body h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a2744;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+        .big-number {
+            font-size: 48px;
+            font-weight: 800;
+            text-align: center;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .big-number.low { color: #dc2626; }
+        .big-number.medium { color: #d97706; }
+        .big-number.high { color: #16a34a; }
+        .card-body .sub-text {
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 14px;
+        }
+        .pct-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .pct-badge.low { background-color: #fee2e2; color: #dc2626; }
+        .pct-badge.medium { background-color: #fef3c7; color: #d97706; }
+        .pct-badge.high { background-color: #dcfce7; color: #16a34a; }
+        .pct-row { text-align: center; }
+
+        /* Progress bar */
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background-color: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+        .progress-bar-fill.low { background-color: #dc2626; }
+        .progress-bar-fill.medium { background-color: #d97706; }
+        .progress-bar-fill.high { background-color: #16a34a; }
+
+        /* Status label */
+        .status-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 13px;
+            font-style: italic;
+            color: #64748b;
+        }
+        .status-label svg { width: 16px; height: 16px; }
+        .status-label.low svg { color: #dc2626; }
+        .status-label.medium svg { color: #d97706; }
+        .status-label.high svg { color: #16a34a; }
+
+        /* ===== HELP CARD ===== */
+        .help-card {
+            background: linear-gradient(135deg, #3b6cb5 0%, #5b8ad6 100%);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: #fff;
+        }
+        .help-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+        .help-card-image {
+            width: 100%;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.08);
+        }
+        .help-question-icon {
+            width: 72px;
+            height: 72px;
+            border: 3px solid rgba(255,255,255,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.8);
+        }
+        .help-card-body {
+            padding: 18px 20px 24px;
+            text-align: center;
+        }
+        .help-card-body h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .help-card-body p {
+            font-size: 13px;
+            line-height: 1.5;
+            opacity: 0.85;
+            margin-bottom: 18px;
+        }
+        .help-card-body .btn-support {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #1a2744;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+        .help-card-body .btn-support:hover {
+            background-color: #0f1a30;
+        }
+        .help-card-body .btn-support svg { width: 18px; height: 18px; }
+        .help-card-body .faq-link {
+            display: block;
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .help-card-body .faq-link:hover {
+            color: #fff;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1100px) {
+            .parking-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 640px) {
+            .parking-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-bar {
+                flex-direction: column;
+                padding: 10px 16px;
+                gap: 10px;
+            }
+            .nav-left { flex-direction: column; gap: 10px; }
+            .nav-tabs { flex-wrap: wrap; }
+        }
     </style>
 </head>
 
 <body>
-    
-    <header>
-        <h1>PARKING EAFIT</h1>
-    </header>
 
-    <div class="container">
+    <!-- ===== TOP HEADER ===== -->
+    <div class="top-header">
+        <div class="top-header-inner">
+            <div class="logo-icon">
+                <svg fill="white" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+            </div>
+            <div class="top-header-text">
+                <h1>PARKING EAFIT</h1>
+                <p>Sistema de Monitoreo en Tiempo Real</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LIVE BANNER ===== -->
+    <div class="live-banner">
+        <span class="live-dot"></span>
+        <span class="live-icon">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+        </span>
+        <span>EN VIVO</span>
+        <span style="opacity:0.5">|</span>
+        <span id="live-clock">--:--:--</span>
+    </div>
+
+    <!-- ===== NAV BAR ===== -->
+    <nav class="nav-bar">
+        <div class="nav-left">
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <svg fill="white" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+                </div>
+                <span>PARKING EAFIT</span>
+            </div>
+            <ul class="nav-tabs">
+                <li><a href="#" class="active">Parqueadero Central</a></li>
+                <li><a href="#">Parqueadero Ingenieros</a></li>
+                <li><a href="#">Parqueadero Idiomas</a></li>
+                <li><a href="#">Ayuda</a></li>
+            </ul>
+        </div>
+        <div class="nav-right">
+            <div class="user-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0"/></svg>
+            </div>
+            <span class="user-info">Estudiante</span>
+            <button class="logout-btn" title="Cerrar sesion">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content">
+
+        <!-- Section header -->
+        <div class="section-header">
+            <div>
+                <h2>Monitoreo de Parqueaderos</h2>
+                <p>Estado en tiempo real de disponibilidad en campus EAFIT</p>
+            </div>
+            <div class="updated-badge">
+                <span class="green-dot"></span>
+                Actualizado: <span id="updated-time">--:--:--</span>
+            </div>
+        </div>
+
+        <!-- Parking grid -->
         <div class="parking-grid">
 
+            <!-- Card: Parqueadero Central -->
+            {% with disponibles=central_disponibles total=central_total pct=central_pct %}
             <div class="parking-card">
-                <div class="image-placeholder">IMAGE</div>
-                <h2>Parqueadero Ingeniería</h2>
-                <p class="disponibles">Disponibles: <span class="cupo-numero">{{ ingenieria_disponibles }}</span></p>
+                <div class="card-image">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/parking-central-placeholder.jpg" alt="Parqueadero Central" onerror="this.style.display='none'">
+                    {% if pct < 20 %}
+                    <span class="availability-tag low">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                        Baja disponibilidad
+                    </span>
+                    {% elif pct < 60 %}
+                    <span class="availability-tag medium">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                        Disponibilidad media
+                    </span>
+                    {% else %}
+                    <span class="availability-tag best">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        Mas disponible
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h3>Parqueadero Central</h3>
+                    <div class="big-number {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">{{ disponibles }}</div>
+                    <p class="sub-text">de {{ total }} espacios disponibles</p>
+                    <div class="pct-row">
+                        <span class="pct-badge {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">{{ pct }}% disponible</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}" style="width: {{ pct }}%"></div>
+                    </div>
+                    <div class="status-label {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">
+                        {% if pct < 20 %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path fill="white" d="M15 9l-6 6M9 9l6 6"/></svg>
+                        Baja disponibilidad
+                        {% elif pct < 60 %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                        Disponibilidad media
+                        {% else %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                        Buena disponibilidad
+                        {% endif %}
+                    </div>
+                </div>
             </div>
+            {% endwith %}
 
+            <!-- Card: Parqueadero Ingenieros -->
+            {% with disponibles=ingenieria_disponibles total=ingenieria_total pct=ingenieria_pct %}
             <div class="parking-card">
-                <div class="image-placeholder">IMAGE</div>
-                <h2>Parqueadero Central</h2>
-                <p class="disponibles">Disponibles: <span class="cupo-numero">{{ central_disponibles }}</span></p>
+                <div class="card-image">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/parking-ingenieros-placeholder.jpg" alt="Parqueadero Ingenieros" onerror="this.style.display='none'">
+                    {% if pct < 20 %}
+                    <span class="availability-tag low">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                        Baja disponibilidad
+                    </span>
+                    {% elif pct < 60 %}
+                    <span class="availability-tag medium">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                        Disponibilidad media
+                    </span>
+                    {% else %}
+                    <span class="availability-tag best">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        Mas disponible
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h3>Parqueadero Ingenieros</h3>
+                    <div class="big-number {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">{{ disponibles }}</div>
+                    <p class="sub-text">de {{ total }} espacios disponibles</p>
+                    <div class="pct-row">
+                        <span class="pct-badge {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">{{ pct }}% disponible</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}" style="width: {{ pct }}%"></div>
+                    </div>
+                    <div class="status-label {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">
+                        {% if pct < 20 %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path fill="white" d="M15 9l-6 6M9 9l6 6"/></svg>
+                        Baja disponibilidad
+                        {% elif pct < 60 %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                        Disponibilidad media
+                        {% else %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                        Buena disponibilidad
+                        {% endif %}
+                    </div>
+                </div>
             </div>
+            {% endwith %}
 
+            <!-- Card: Parqueadero Idiomas -->
+            {% with disponibles=idiomas_disponibles total=idiomas_total pct=idiomas_pct %}
             <div class="parking-card">
-                <div class="image-placeholder">IMAGE</div>
-                <h2>Parqueadero Idiomas</h2>
-                <p class="disponibles">Disponibles: <span class="cupo-numero">{{ idiomas_disponibles }}</span></p>
+                <div class="card-image">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/parking-idiomas-placeholder.jpg" alt="Parqueadero Idiomas" onerror="this.style.display='none'">
+                    {% if pct < 20 %}
+                    <span class="availability-tag low">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                        Baja disponibilidad
+                    </span>
+                    {% elif pct < 60 %}
+                    <span class="availability-tag medium">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                        Disponibilidad media
+                    </span>
+                    {% else %}
+                    <span class="availability-tag best">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        Mas disponible
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h3>Parqueadero Idiomas</h3>
+                    <div class="big-number {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">{{ disponibles }}</div>
+                    <p class="sub-text">de {{ total }} espacios disponibles</p>
+                    <div class="pct-row">
+                        <span class="pct-badge {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">{{ pct }}% disponible</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}" style="width: {{ pct }}%"></div>
+                    </div>
+                    <div class="status-label {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">
+                        {% if pct < 20 %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path fill="white" d="M15 9l-6 6M9 9l6 6"/></svg>
+                        Baja disponibilidad
+                        {% elif pct < 60 %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                        Disponibilidad media
+                        {% else %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                        Buena disponibilidad
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endwith %}
+
+            <!-- Card: Centro de Ayuda -->
+            <div class="help-card">
+                <div class="help-card-image">
+                    <div class="help-question-icon">?</div>
+                </div>
+                <div class="help-card-body">
+                    <h3>Centro de Ayuda</h3>
+                    <p>Si tienes problemas con el sistema de parqueaderos, consulta nuestra seccion de preguntas frecuentes o contacta a soporte tecnico.</p>
+                    <a href="#" class="btn-support">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.671 1.09-.085 2.17-.207 3.238-.364 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
+                        Contactar Soporte
+                    </a>
+                    <a href="#" class="faq-link">Preguntas frecuentes</a>
+                </div>
             </div>
 
         </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const contadores = document.querySelectorAll('.cupo-numero');
-            
-            const MAX_CUPO = 100; 
-
-            contadores.forEach(span => {
-                let cantidad = parseInt(span.textContent);
-                if (isNaN(cantidad)) return;
-
-                let valorNormalizado = Math.max(0, Math.min(cantidad, MAX_CUPO));
-
-                let hue = (valorNormalizado / MAX_CUPO) * 120;
-
-                span.style.color = `hsl(${hue}, 90%, 35%)`;
-            });
-        });
+        function updateClock() {
+            var now = new Date();
+            var h = String(now.getHours()).padStart(2, '0');
+            var m = String(now.getMinutes()).padStart(2, '0');
+            var s = String(now.getSeconds()).padStart(2, '0');
+            var time = h + ':' + m + ':' + s;
+            document.getElementById('live-clock').textContent = time;
+            document.getElementById('updated-time').textContent = time;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
     </script>
 
 </body>
