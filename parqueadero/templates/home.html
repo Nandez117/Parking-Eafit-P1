@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PARKING EAFIT - Sistema de Monitoreo en Tiempo Real</title>
+    <title>PARKING EAFIT</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -547,7 +550,6 @@
 
 <body>
 
-    <!-- ===== TOP HEADER ===== -->
     <div class="top-header">
         <div class="top-header-inner">
             <div class="logo-icon">
@@ -560,7 +562,6 @@
         </div>
     </div>
 
-    <!-- ===== LIVE BANNER ===== -->
     <div class="live-banner">
         <span class="live-dot"></span>
         <span class="live-icon">
@@ -571,7 +572,6 @@
         <span id="live-clock">--:--:--</span>
     </div>
 
-    <!-- ===== NAV BAR ===== -->
     <nav class="nav-bar">
         <div class="nav-left">
             <div class="nav-brand">
@@ -598,10 +598,8 @@
         </div>
     </nav>
 
-    <!-- ===== MAIN CONTENT ===== -->
     <div class="main-content">
 
-        <!-- Section header -->
         <div class="section-header">
             <div>
                 <h2>Monitoreo de Parqueaderos</h2>
@@ -613,154 +611,53 @@
             </div>
         </div>
 
-        <!-- Parking grid -->
         <div class="parking-grid">
 
-            <!-- Card: Parqueadero Central -->
             {% with disponibles=central_disponibles total=central_total pct=central_pct %}
             <div class="parking-card">
                 <div class="card-image">
                     <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/parking-central-placeholder.jpg" alt="Parqueadero Central" onerror="this.style.display='none'">
-                    {% if pct < 20 %}
-                    <span class="availability-tag low">
-                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                        Baja disponibilidad
-                    </span>
-                    {% elif pct < 60 %}
-                    <span class="availability-tag medium">
-                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-                        Disponibilidad media
-                    </span>
-                    {% else %}
-                    <span class="availability-tag best">
-                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                        Mas disponible
-                    </span>
-                    {% endif %}
-                </div>
+                    
+                    </div>
                 <div class="card-body">
                     <h3>Parqueadero Central</h3>
                     <div class="big-number {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">{{ disponibles }}</div>
                     <p class="sub-text">de {{ total }} espacios disponibles</p>
-                    <div class="pct-row">
-                        <span class="pct-badge {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">{{ pct }}% disponible</span>
+                    
                     </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}" style="width: {{ pct }}%"></div>
-                    </div>
-                    <div class="status-label {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">
-                        {% if pct < 20 %}
-                        <svg fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path fill="white" d="M15 9l-6 6M9 9l6 6"/></svg>
-                        Baja disponibilidad
-                        {% elif pct < 60 %}
-                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-                        Disponibilidad media
-                        {% else %}
-                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                        Buena disponibilidad
-                        {% endif %}
-                    </div>
-                </div>
             </div>
             {% endwith %}
 
-            <!-- Card: Parqueadero Ingenieros -->
             {% with disponibles=ingenieria_disponibles total=ingenieria_total pct=ingenieria_pct %}
             <div class="parking-card">
                 <div class="card-image">
                     <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/parking-ingenieros-placeholder.jpg" alt="Parqueadero Ingenieros" onerror="this.style.display='none'">
-                    {% if pct < 20 %}
-                    <span class="availability-tag low">
-                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                        Baja disponibilidad
-                    </span>
-                    {% elif pct < 60 %}
-                    <span class="availability-tag medium">
-                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-                        Disponibilidad media
-                    </span>
-                    {% else %}
-                    <span class="availability-tag best">
-                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                        Mas disponible
-                    </span>
-                    {% endif %}
-                </div>
+                    
+                    </div>
                 <div class="card-body">
                     <h3>Parqueadero Ingenieros</h3>
                     <div class="big-number {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">{{ disponibles }}</div>
                     <p class="sub-text">de {{ total }} espacios disponibles</p>
-                    <div class="pct-row">
-                        <span class="pct-badge {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">{{ pct }}% disponible</span>
+                    
                     </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}" style="width: {{ pct }}%"></div>
-                    </div>
-                    <div class="status-label {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">
-                        {% if pct < 20 %}
-                        <svg fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path fill="white" d="M15 9l-6 6M9 9l6 6"/></svg>
-                        Baja disponibilidad
-                        {% elif pct < 60 %}
-                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-                        Disponibilidad media
-                        {% else %}
-                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                        Buena disponibilidad
-                        {% endif %}
-                    </div>
-                </div>
             </div>
             {% endwith %}
 
-            <!-- Card: Parqueadero Idiomas -->
             {% with disponibles=idiomas_disponibles total=idiomas_total pct=idiomas_pct %}
             <div class="parking-card">
                 <div class="card-image">
                     <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/parking-idiomas-placeholder.jpg" alt="Parqueadero Idiomas" onerror="this.style.display='none'">
-                    {% if pct < 20 %}
-                    <span class="availability-tag low">
-                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                        Baja disponibilidad
-                    </span>
-                    {% elif pct < 60 %}
-                    <span class="availability-tag medium">
-                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-                        Disponibilidad media
-                    </span>
-                    {% else %}
-                    <span class="availability-tag best">
-                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                        Mas disponible
-                    </span>
-                    {% endif %}
-                </div>
+                    
+                    </div>
                 <div class="card-body">
                     <h3>Parqueadero Idiomas</h3>
                     <div class="big-number {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">{{ disponibles }}</div>
                     <p class="sub-text">de {{ total }} espacios disponibles</p>
-                    <div class="pct-row">
-                        <span class="pct-badge {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">{{ pct }}% disponible</span>
+                    
                     </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}" style="width: {{ pct }}%"></div>
-                    </div>
-                    <div class="status-label {% if pct < 20 %}low{% elif pct < 60 %}medium{% else %}high{% endif %}">
-                        {% if pct < 20 %}
-                        <svg fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path fill="white" d="M15 9l-6 6M9 9l6 6"/></svg>
-                        Baja disponibilidad
-                        {% elif pct < 60 %}
-                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-                        Disponibilidad media
-                        {% else %}
-                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                        Buena disponibilidad
-                        {% endif %}
-                    </div>
-                </div>
             </div>
             {% endwith %}
 
-            <!-- Card: Centro de Ayuda -->
             <div class="help-card">
                 <div class="help-card-image">
                     <div class="help-question-icon">?</div>
@@ -779,7 +676,6 @@
         </div>
     </div>
 
-    <!-- ===== FOOTER ===== -->
     <footer class="site-footer">
         <div class="footer-inner">
             <div class="footer-left">
@@ -835,5 +731,6 @@
         setInterval(updateClock, 1000);
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

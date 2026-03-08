@@ -9,9 +9,9 @@ def home(request):
     idiomas_total = 100
 
     # Espacios disponibles (reemplazar con datos reales de tu modelo/sensor)
-    central_disponibles = 8
-    ingenieria_disponibles = 45
-    idiomas_disponibles = 82
+    central_disponibles = 11
+    ingenieria_disponibles = 100
+    idiomas_disponibles = 100
 
     # Calcular porcentajes
     central_pct = round((central_disponibles / central_total) * 100, 1) if central_total else 0
