@@ -25,7 +25,7 @@ At this moment, the project includes:
 - **Django**
 - **HTML**
 - **SQLite3**
-- **Git & GitHub**
+- **GitHub**
 
 ---
 
