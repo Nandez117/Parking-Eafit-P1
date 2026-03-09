@@ -1,4 +1,4 @@
-# 🚗 Parking EAFIT — Estimated Waiting Time
+# Parking EAFIT — Estimated Waiting Time
 
 ## User Story
 
