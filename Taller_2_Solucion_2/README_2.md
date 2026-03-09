@@ -41,6 +41,8 @@ The frontend includes:
 
 **Isabella Cadavid Posada**
 
+Username : isacada
+Password: 1234
 ---
 
 ## Requirements
