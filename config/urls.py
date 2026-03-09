@@ -20,5 +20,5 @@ from monitoreo.views import dashboard_guardia
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', dashboard_guardia, name='home'), # Esto hace que la página principal sea tu dashboard
+    path('', dashboard_guardia, name='home'), 
 ]
