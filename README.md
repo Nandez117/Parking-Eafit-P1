@@ -25,7 +25,21 @@ At this moment, the project includes:
 - **Django**
 - **HTML**
 - **SQLite3**
-- **Git & GitHub**
+- **GitHub**
+
+---
+
+## 🚀 Development & Methodology
+
+This project follows the **Trunk-Based Development** methodology. All new features are implemented in individual branches before being integrated into the project.
+
+For the **Individual Assignment #2**, the focus was on implementing a specific User Story with full database integration.
+
+### 📖 User Story Implementation
+- **US 03 – Parking Lot Status Monitoring**: Full implementation of the real-time monitoring dashboard connected to the SQLite database.
+- **Key Features**: Django ORM queries, Bootstrap 5 styling, and asynchronous data update.
+
+👉 **[View Full US-03 Documentation in the Wiki](https://github.com/Nandez117/Parking-Eafit-P1/wiki/Taller-2)**
 
 ---
 
@@ -41,6 +55,8 @@ EafitParking/
 │
 ├── monitoreo/              # Main application
 │   ├── migrations/
+│   ├── static/
+│   │   └── styles.css
 │   ├── templates/
 │   │   └── dashboard.html
 │   ├── admin.py
