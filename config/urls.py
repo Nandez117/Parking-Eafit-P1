@@ -16,9 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from monitoreo.views import dashboard_guardia
+from monitoreo.views import dashboard_guardia,vista_central, vista_ingenieros, vista_idiomas, actualizar_estado_celda
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', dashboard_guardia, name='home'), 
+    path('', dashboard_guardia, name='dashboard'), 
+    path('central/', vista_central, name='p_central'), 
+    path('ingenieros/', vista_ingenieros, name='p_ingenieros'), 
+    path('idiomas/', vista_idiomas, name='p_idiomas'),
+    # --- RUTA PARA AJAX ---
+    path('actualizar_celda/', actualizar_estado_celda, name='actualizar_celda'),
 ]
