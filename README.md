@@ -40,18 +40,27 @@ http://127.0.0.1:8000/
 
 
 ├── 📁 Parking
-│   ├── 📁 Parking_Config
+│   ├── 📁 Config
 │   │   ├── 🐍 __init__.py
 │   │   ├── 🐍 asgi.py
 │   │   ├── 🐍 settings.py
 │   │   ├── 🐍 urls.py
 │   │   └── 🐍 wsgi.py
-│   ├── 📁 Parking_Set
+│   ├── 📁 monitoreo
 │   │   ├── 📁 migrations
 │   │   │   ├── 🐍 0001_initial.py
 │   │   │   └── 🐍 __init__.py
+│   │   ├── 📁 static
+│   │   │   └── central.png
+│   │   │   └── idiomas.png
+│   │   │   └── ingenieros.png
+│   │   │   └── logo.png
+│   │   │   └── styles.css
 │   │   ├── 📁 templates
-│   │   │   └── 🌐 home.html
+│   │   │   └── 🌐 dashboard.html
+│   │   │   └── 🌐 p_central.html
+│   │   │   └── 🌐 p_idiomas.html
+│   │   │   └── 🌐 p_ingenieros.html
 │   │   ├── 🐍 __init__.py
 │   │   ├── 🐍 admin.py
 │   │   ├── 🐍 apps.py
