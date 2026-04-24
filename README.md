@@ -21,6 +21,10 @@ Install Django and any other required packages. (Note: If you have a requirement
 
 pip install django
 
+pip install google-generativeai
+
+pip install openai
+
 3. Apply Database Migrations
 Since the project uses an SQLite database (db.sqlite3), ensure all models from the parqueadero app are properly synced:
 
