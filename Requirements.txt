@@ -12,3 +12,9 @@ Python (v3.8 or higher recommended)
 pip (Python package installer)
 
 Step-by-Step Instructions
+
+# Install libraries for APIs
+
+pip install google-generativeai
+
+pip install openai
