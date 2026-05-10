@@ -248,6 +248,9 @@ def vista_idiomas(request):
             context[f'celdas_{l.lower()}'] = c.filter(numero__istartswith=l)
     return render(request, "p_idiomas.html", context)
 
+def vista_faq(request):
+    return render(request, "faq.html")
+
 # ─────────────────────────────────────────
 #  ENDPOINTS DE REPORTES IA
 # ─────────────────────────────────────────

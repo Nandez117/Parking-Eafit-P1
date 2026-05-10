@@ -20,6 +20,7 @@ urlpatterns = [
     path('central/', views.vista_central, name='p_central'), 
     path('ingenieros/', views.vista_ingenieros, name='p_ingenieros'), 
     path('idiomas/', views.vista_idiomas, name='p_idiomas'),
+    path('faq/', views.vista_faq, name='faq'),
     
     # --- OPERACIONES DE CELDAS (AJAX) ---
     path('actualizar_celda/', views.actualizar_estado_celda, name='actualizar_celda'),

@@ -78,12 +78,14 @@
                 {% if user.username == 'invitado_dummy' %}
                     <form action="{% url 'logout' %}" method="post" class="m-0 p-0 d-flex align-items-center">
                         {% csrf_token %}
-                        <button type="submit" class="fw-semibold" style="background:none; border:none; cursor:pointer; color:inherit; padding:0;">
+                        <button type="submit" class="fw-semibold" style="background:none; border:none; cursor:pointer; color:inherit; padding:0; font-size: 0.875rem;">
                             Iniciar Sesión
                         </button>
                     </form>
                 {% else %}
-                    <span class="user-info fw-semibold">{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</span>
+                    <span class="user-info fw-semibold">
+                        {% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}
+                    </span>
                     <form action="{% url 'logout' %}" method="post" class="m-0 p-0 d-flex align-items-center ms-2">
                         {% csrf_token %}
                         <button type="submit" class="logout-btn d-flex align-items-center justify-content-center" title="Cerrar sesión" style="background:none; border:none; cursor:pointer; color:inherit;">
@@ -95,7 +97,7 @@
                     </form>
                 {% endif %}
             {% else %}
-                <a href="{% url 'login' %}" class="fw-semibold" style="text-decoration:none; color:inherit;">Iniciar Sesión</a>
+                <a href="{% url 'login' %}" class="fw-semibold" style="text-decoration:none; color:inherit; font-size: 0.875rem;">Iniciar Sesión</a>
             {% endif %}
         </div>
     </nav>
@@ -187,8 +189,7 @@
                 </div>
             </div>
             {% endfor %}
-
-
+        </div>
 
 {% if user.is_staff %}
 <div class="row mt-5">
@@ -374,10 +375,6 @@
 </script>
 
 
-            
-        </div>
-    </div>
-</div>
 {% endif %}
         <div class="row mt-4">
             <div class="col-12">
@@ -392,14 +389,46 @@
                                 contacta a soporte técnico para asistencia inmediata.</p>
                         </div>
                         <div class="help-action-section">
-                            <a href="mailto:soporte@eafit.edu.co" class="btn-support-alt">Contactar Soporte</a>
-                            <a href="#" class="faq-link-alt">Preguntas frecuentes</a>
+                            <button type="button" class="btn-support-alt border-0" data-bs-toggle="modal" data-bs-target="#soporteModal">Contactar Soporte</button>
+                            <a href="{% url 'faq' %}" class="faq-link-alt">Preguntas frecuentes</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
+    </div>
+
+    <!-- Modal Soporte -->
+    <div class="modal fade" id="soporteModal" tabindex="-1" aria-labelledby="soporteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header text-white" style="background-color: #0d1b3e;">
+                    <h5 class="modal-title fw-bold" id="soporteModalLabel">Contactar Soporte</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-5">
+                    <div class="mb-5">
+                        <div class="icon-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 64px; height: 64px; background-color: #f1f5f9; border-radius: 50%;">
+                            <svg fill="none" stroke="#0d1b3e" stroke-width="2" viewBox="0 0 24 24" width="32" height="32">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                            </svg>
+                        </div>
+                        <h6 class="fw-bold text-secondary mb-1">Número Oficina Parqueaderos</h6>
+                        <a href="tel:+573229487540" class="fs-4 fw-bold text-decoration-none" style="color: #0d1b3e;">+57 322 9487540</a>
+                    </div>
+                    <div>
+                        <div class="icon-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 64px; height: 64px; background-color: #f1f5f9; border-radius: 50%;">
+                            <svg fill="none" stroke="#0d1b3e" stroke-width="2" viewBox="0 0 24 24" width="32" height="32">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                            </svg>
+                        </div>
+                        <h6 class="fw-bold text-secondary mb-1">Correo Electrónico</h6>
+                        <a href="mailto:parqueadero@eafit.edu.co" class="fs-5 fw-bold text-decoration-none" style="color: #0d1b3e;">parqueadero@eafit.edu.co</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer class="site-footer mt-5">
@@ -445,10 +474,7 @@
             <div class="footer-right">
                 <div class="footer-brand">
                     <div class="footer-logo-icon">
-                        <svg fill="white" viewBox="0 0 24 24" width="24" height="24">
-                            <path
-                                d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
-                        </svg>
+                        <img src="{% static 'logo.png' %}" alt="Logo EAFIT" style="height: 28px; width: auto; border-radius: 4px;">
                     </div>
                     <span>PARKING EAFIT</span>
                 </div>
