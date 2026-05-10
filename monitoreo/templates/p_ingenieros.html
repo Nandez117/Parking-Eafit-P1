@@ -1,0 +1,1061 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parqueadero Ingenieros</title>
+    <link rel="icon" type="image/png" href="{% static 'logo.png' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="{% static 'styles.css' %}?v=2" rel="stylesheet">
+    <link href="{% static 'mapa_central.css' %}" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Ajustes para el mapa extendido */
+        .map-wrapper {
+            padding: 3rem 1rem !important;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            overflow-x: auto;
+            min-height: 800px;
+        }
+
+        /* Layout principal horizontal */
+        .map-layout {
+            display: flex;
+            gap: 2.5rem;
+            justify-content: center;
+            align-items: center;
+            min-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Contenedor principal de los bloques centrales */
+        .central-blocks-grid-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Separación entre cada línea/fila de parqueo */
+        .blocks-column-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            /* Este es el espacio notorio entre cada línea */
+        }
+
+        /* LA AVENIDA PRINCIPAL (Espacio ancho vertical en el medio) */
+        .blocks-row-separator {
+            margin-top: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        /* Estructura de bloque largo fusionado (10 columnas x 2 filas) = 20 celdas */
+        .parking-block {
+            border: 1px solid #cbd5e1;
+            padding: 2px;
+            background-color: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .block-10x2 {
+            display: grid;
+            grid-template-columns: repeat(10, 20px);
+            grid-template-rows: repeat(2, 40px);
+            gap: 2px;
+        }
+
+        .block-10x2 .spot {
+            width: 100%;
+            height: 100%;
+        }
+
+        .block-10x1 {
+            display: grid;
+            grid-template-columns: repeat(10, 20px);
+            grid-template-rows: repeat(1, 40px);
+            gap: 2px;
+        }
+
+        .block-10x1 .spot {
+            width: 100%;
+            height: 100%;
+        }
+
+        .column-a-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .column-a-wrapper .spot {
+            width: 40px;
+            height: 20px;
+        }
+
+        .spot-divider {
+            height: 50px;
+            border: none;
+        }
+
+        .spot-divider-label {
+            display: none;
+        }
+
+        /* Estilos visuales de las porterías */
+        .gate-label-vertical {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            background-color: #1e293b !important;
+            color: #ffffff !important;
+            padding: 2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            height: auto;
+        }
+
+        /* Efecto hover en las celdas */
+        .spot {
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .spot:hover {
+            transform: scale(1.05);
+        }
+
+        .section-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .section-label {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #1e293b;
+            text-align: center;
+        }
+
+        .block-1x18 {
+            display: grid;
+            grid-template-columns: 40px;
+            grid-template-rows: repeat(18, 22px);
+            gap: 4px;
+        }
+
+        .block-1x18 .spot {
+            width: 100%;
+            height: 100%;
+            font-size: 0.70rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .map-layout-ingenieros {
+            display: flex;
+            gap: 3.5rem;
+            justify-content: center;
+            align-items: start;
+            margin: 0 auto;
+            position: relative;
+            padding-top: 1rem;
+        }
+
+        .block-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* U Shape Additional Layouts */
+        .u-shape-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            align-items: center;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 0 2rem;
+        }
+
+        .block-18x1 {
+            display: grid;
+            grid-template-rows: 40px;
+            grid-template-columns: repeat(18, 35px);
+            gap: 4px;
+        }
+
+        .block-18x1 .spot {
+            width: 100%;
+            height: 100%;
+            font-size: 0.70rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gate-label-box {
+            background-color: #1e293b;
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sticky-header-container">
+    <div class="top-header">
+        <div class="top-header-inner">
+            <div class="logo-icon">
+                <img src="{% static 'logo.png' %}" alt="Logo EAFIT" style="height: 40px; width: auto;">
+            </div>
+            <div class="top-header-text">
+                <h1>PARKING EAFIT</h1>
+                <p>Sistema de Monitoreo en Tiempo Real</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="live-banner">
+        <span class="live-dot"></span>
+        <span class="live-icon">
+            <svg fill="white" viewBox="0 0 24 24" width="16" height="16">
+                <path
+                    d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" />
+            </svg>
+        </span>
+        <span>EN VIVO</span>
+        <span style="opacity:0.5">|</span>
+        <span id="live-clock"
+            style="font-variant-numeric: tabular-nums; display: inline-block; min-width: 80px; text-align: right;">--:--:--</span>
+    </div>
+
+    <nav class="nav-bar d-flex justify-content-between align-items-center">
+        <div class="nav-left">
+            <div class="nav-brand d-flex align-items-center gap-2 fw-bold text-dark">
+                <div class="brand-icon d-flex">
+                    <img src="{% static 'logo.png' %}" alt="Logo EAFIT" style="height: 30px; width: auto;">
+                </div>
+            </div>
+        </div>
+        <div class="nav-links d-flex gap-2">
+            <a href="{% url 'dashboard' %}" class="nav-link-item">Inicio</a>
+            <a href="{% url 'p_central' %}" class="nav-link-item">P. Central</a>
+            <a href="{% url 'p_ingenieros' %}" class="nav-link-item active">P. Ingenieros</a>
+            <a href="{% url 'p_idiomas' %}" class="nav-link-item">P. Idiomas</a>
+        </div>
+        <div class="nav-right d-flex align-items-center gap-2">
+            <div class="user-icon d-flex align-items-center">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
+                </svg>
+            </div>
+            {% if user.is_authenticated %}
+                {% if user.username == 'invitado_dummy' %}
+                    <form action="{% url 'logout' %}" method="post" class="m-0 p-0 d-flex align-items-center">
+                        {% csrf_token %}
+                        <button type="submit" class="fw-semibold" style="background:none; border:none; cursor:pointer; color:inherit; padding:0;">
+                            Iniciar Sesión
+                        </button>
+                    </form>
+                {% else %}
+                    <span class="user-info fw-semibold">{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</span>
+                    <form action="{% url 'logout' %}" method="post" class="m-0 p-0 d-flex align-items-center ms-2">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn d-flex align-items-center justify-content-center" title="Cerrar sesión" style="background:none; border:none; cursor:pointer; color:inherit;">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="20" height="20">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                            </svg>
+                        </button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="fw-semibold" style="text-decoration:none; color:inherit;">Iniciar Sesión</a>
+            {% endif %}
+        </div>
+    </nav>
+    </div>
+
+    <div class="container mt-4 mb-5">
+        <div class="section-header border-bottom pb-3 mb-4">
+            <h2 class="fs-4 fw-bold text-dark mb-1">Mapa Interactivo: Parqueadero Ingenieros</h2>
+            <p class="text-secondary mb-0 small">Gestión en tiempo real de celdas y placas.</p>
+        </div>
+
+        <div class="map-wrapper shadow-sm border rounded-3 bg-white">
+            <div class="u-shape-container">
+                <!-- B LINE (Top-most) -->
+                <div class="d-flex justify-content-center w-100" style="margin-bottom: 1rem;">
+                    <div class="section-container" style="align-items: center;">
+                        <div class="section-label" style="margin-bottom: 0px;">B</div>
+                        <div class="parking-block block-18x1">
+                            {% for celda in celdas_b %}
+                            <div class="spot {% if celda.esta_ocupada %}occupied{% else %}free{% endif %}"
+                                id="celda-{{ celda.id }}" data-id="{{ celda.id }}" data-numero="{{ celda.numero }}"
+                                data-placa="{% if user.is_staff %}{{ celda.placa|default_if_none:'' }}{% endif %}">
+                                {{ celda.numero }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAIN GRID BELOW B -->
+                <div class="map-layout-ingenieros">
+                    <!-- LEFT ARM (Exit + A) -->
+                    <div class="left-arm d-flex flex-column align-items-center" style="gap: 1.5rem;">
+                        <div class="gate-label-box" style="margin-bottom: 0.5rem; width: 100%;">Salida a Vegas</div>
+                        <div class="section-container">
+                            <div class="section-label">A</div>
+                            <div class="parking-block block-1x18">
+                                {% for celda in celdas_a %}
+                                <div class="spot {% if celda.esta_ocupada %}occupied{% else %}free{% endif %}"
+                                    id="celda-{{ celda.id }}" data-id="{{ celda.id }}" data-numero="{{ celda.numero }}"
+                                    data-placa="{% if user.is_staff %}{{ celda.placa|default_if_none:'' }}{% endif %}">
+                                    {{ celda.numero }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MIDDLE BLOCKS -->
+                    <div class="middle-blocks d-flex flex-row" style="gap: 3.5rem; margin-top: 5.5rem;">
+                        <div class="block-group">
+                            <div class="section-container">
+                                <div class="section-label">C</div>
+                                <div class="parking-block block-1x18">
+                                    {% for celda in celdas_c %}
+                                    <div class="spot {% if celda.esta_ocupada %}occupied{% else %}free{% endif %}"
+                                        id="celda-{{ celda.id }}" data-id="{{ celda.id }}"
+                                        data-numero="{{ celda.numero }}"
+                                        data-placa="{% if user.is_staff %}{{ celda.placa|default_if_none:'' }}{% endif %}">
+                                        {{ celda.numero }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="section-container">
+                                <div class="section-label">D</div>
+                                <div class="parking-block block-1x18">
+                                    {% for celda in celdas_d %}
+                                    <div class="spot {% if celda.esta_ocupada %}occupied{% else %}free{% endif %}"
+                                        id="celda-{{ celda.id }}" data-id="{{ celda.id }}"
+                                        data-numero="{{ celda.numero }}"
+                                        data-placa="{% if user.is_staff %}{{ celda.placa|default_if_none:'' }}{% endif %}">
+                                        {{ celda.numero }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="block-group">
+                            <div class="section-container">
+                                <div class="section-label">E</div>
+                                <div class="parking-block block-1x18">
+                                    {% for celda in celdas_e %}
+                                    <div class="spot {% if celda.esta_ocupada %}occupied{% else %}free{% endif %}"
+                                        id="celda-{{ celda.id }}" data-id="{{ celda.id }}"
+                                        data-numero="{{ celda.numero }}"
+                                        data-placa="{% if user.is_staff %}{{ celda.placa|default_if_none:'' }}{% endif %}">
+                                        {{ celda.numero }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="section-container">
+                                <div class="section-label">F</div>
+                                <div class="parking-block block-1x18">
+                                    {% for celda in celdas_f %}
+                                    <div class="spot {% if celda.esta_ocupada %}occupied{% else %}free{% endif %}"
+                                        id="celda-{{ celda.id }}" data-id="{{ celda.id }}"
+                                        data-numero="{{ celda.numero }}"
+                                        data-placa="{% if user.is_staff %}{{ celda.placa|default_if_none:'' }}{% endif %}">
+                                        {{ celda.numero }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="block-group">
+                            <div class="section-container">
+                                <div class="section-label">G</div>
+                                <div class="parking-block block-1x18">
+                                    {% for celda in celdas_g %}
+                                    <div class="spot {% if celda.esta_ocupada %}occupied{% else %}free{% endif %}"
+                                        id="celda-{{ celda.id }}" data-id="{{ celda.id }}"
+                                        data-numero="{{ celda.numero }}"
+                                        data-placa="{% if user.is_staff %}{{ celda.placa|default_if_none:'' }}{% endif %}">
+                                        {{ celda.numero }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="section-container">
+                                <div class="section-label">H</div>
+                                <div class="parking-block block-1x18">
+                                    {% for celda in celdas_h %}
+                                    <div class="spot {% if celda.esta_ocupada %}occupied{% else %}free{% endif %}"
+                                        id="celda-{{ celda.id }}" data-id="{{ celda.id }}"
+                                        data-numero="{{ celda.numero }}"
+                                        data-placa="{% if user.is_staff %}{{ celda.placa|default_if_none:'' }}{% endif %}">
+                                        {{ celda.numero }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="block-group">
+                            <div class="section-container">
+                                <div class="section-label">J</div>
+                                <div class="parking-block block-1x18">
+                                    {% for celda in celdas_j %}
+                                    <div class="spot {% if celda.esta_ocupada %}occupied{% else %}free{% endif %}"
+                                        id="celda-{{ celda.id }}" data-id="{{ celda.id }}"
+                                        data-numero="{{ celda.numero }}"
+                                        data-placa="{% if user.is_staff %}{{ celda.placa|default_if_none:'' }}{% endif %}">
+                                        {{ celda.numero }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="section-container">
+                                <div class="section-label">K</div>
+                                <div class="parking-block block-1x18">
+                                    {% for celda in celdas_k %}
+                                    <div class="spot {% if celda.esta_ocupada %}occupied{% else %}free{% endif %}"
+                                        id="celda-{{ celda.id }}" data-id="{{ celda.id }}"
+                                        data-numero="{{ celda.numero }}"
+                                        data-placa="{% if user.is_staff %}{{ celda.placa|default_if_none:'' }}{% endif %}">
+                                        {{ celda.numero }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT ARM (Exit + I) -->
+                    <div class="right-arm d-flex flex-column align-items-center" style="gap: 1.5rem;">
+                        <div class="gate-label-box" style="margin-bottom: 0.5rem; width: 100%;">Salida a Regional</div>
+                        <div class="section-container">
+                            <div class="section-label">I</div>
+                            <div class="parking-block block-1x18">
+                                {% for celda in celdas_i %}
+                                <div class="spot {% if celda.esta_ocupada %}occupied{% else %}free{% endif %}"
+                                    id="celda-{{ celda.id }}" data-id="{{ celda.id }}" data-numero="{{ celda.numero }}"
+                                    data-placa="{% if user.is_staff %}{{ celda.placa|default_if_none:'' }}{% endif %}">
+                                    {{ celda.numero }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Gestión de Celdas -->
+        <div class="modal fade" id="cellModal" tabindex="-1" aria-labelledby="cellModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
+                    <div class="modal-header border-0" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; padding: 1.5rem;">
+                        <h5 class="modal-title fw-bold" id="cellModalLabel">Gestionar Celda <span id="modalCellNumber" style="color: var(--green);"></span></h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div id="modalAlert" class="alert alert-danger d-none mb-3" style="border-radius: 8px; font-size: 0.9rem;" role="alert"></div>
+                        <form id="cellForm">
+                            <div class="mb-3">
+                                <label for="modalPlateInput" class="form-label fw-semibold text-dark">Placa del Vehículo</label>
+                                <input type="text" class="form-control form-control-lg text-uppercase" id="modalPlateInput" placeholder="Ej: ABC123" maxlength="6" autocomplete="off" style="border-radius: 8px; border: 2px solid var(--gray-200); font-weight: 600; letter-spacing: 2px;">
+                                <div id="plateFeedback" class="form-text mt-2" style="font-size: 0.85rem;">Debe contener 3 letras y 3 números.</div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer border-0 p-4 pt-0">
+                        <div class="row w-100 m-0">
+                            <div class="col-6 pe-2 ps-0">
+                                <button type="button" class="btn btn-light w-100 py-2 fw-semibold" style="border-radius: 8px;" data-bs-dismiss="modal">Cancelar</button>
+                            </div>
+                            <div class="col-6 ps-2 pe-0">
+                                <button type="button" class="btn btn-danger w-100 py-2 fw-semibold d-none" style="border-radius: 8px;" id="btnReleaseCell">Liberar Celda</button>
+                                <button type="button" class="btn w-100 py-2 fw-bold" style="background-color: var(--primary); color: white; border-radius: 8px;" id="btnSaveCell">Registrar Ingreso</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-section mt-5">
+            <div class="section-header border-bottom pb-3">
+                <h5 class="fw-bold text-dark mb-4">Tiempo Promedio por Zona</h5>
+                <p class="text-secondary mb-0 small">Estadísticas en tiempo real del parqueadero.</p>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13h2.626a2 2 0 001.972-1.671l.34-2.046a2 2 0 013.924 0l.34 2.046A2 2 0 0014.174 13H21" />
+                        </svg>
+                        Flujo de Tráfico por Hora
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="waitTimeChart"></canvas>
+                    </div>
+                    <div class="chart-stats">
+                        <div class="chart-stat">
+                            <div class="chart-stat-value text-success" id="totalEntradas">0</div>
+                            <div class="chart-stat-label">Entradas</div>
+                        </div>
+                        <div class="chart-stat">
+                            <div class="chart-stat-value text-danger" id="totalSalidas">0</div>
+                            <div class="chart-stat-label">Salidas</div>
+                        </div>
+                        <div class="chart-stat">
+                            <div class="chart-stat-value" id="flujoNeto">0</div>
+                            <div class="chart-stat-label">Flujo Neto</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Disponibilidad por Zona
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="availabilityChart"></canvas>
+                    </div>
+                    <div class="chart-stats">
+                        <div class="chart-stat">
+                            <div class="chart-stat-value" id="totalAvailable">0</div>
+                            <div class="chart-stat-label">Disponibles</div>
+                        </div>
+                        <div class="chart-stat">
+                            <div class="chart-stat-value" id="totalOccupied">0</div>
+                            <div class="chart-stat-label">Ocupados</div>
+                        </div>
+                        <div class="chart-stat">
+                            <div class="chart-stat-value" id="occupancyRate">0%</div>
+                            <div class="chart-stat-label">Ocupación</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Nivel de Congestión Prolongada
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="lastChangeChart"></canvas>
+                    </div>
+                    <div class="chart-stats">
+                        <div class="chart-stat">
+                            <div class="chart-stat-value text-success" id="zonasVerdes">0</div>
+                            <div class="chart-stat-label">Fluidas</div>
+                        </div>
+                        <div class="chart-stat">
+                            <div class="chart-stat-value text-warning" id="zonasAmarillas">0</div>
+                            <div class="chart-stat-label">Normales</div>
+                        </div>
+                        <div class="chart-stat">
+                            <div class="chart-stat-value text-danger" id="zonasRojas">0</div>
+                            <div class="chart-stat-label">Atascadas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="site-footer mt-5">
+        <div class="container footer-inner">
+            <div class="footer-left">
+                <h4>LÍNEAS DE EMERGENCIA</h4>
+                <div class="footer-contact">
+                    <div class="footer-contact-item">
+                        <svg class="phone-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                            width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                        </svg>
+                        <div>
+                            <div class="contact-name">Seguridad EAFIT</div>
+                            <div class="contact-number">(604) 261 9500 Ext. 9282</div>
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <svg class="phone-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                            width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                        </svg>
+                        <div>
+                            <div class="contact-name">Emergencias Medellín</div>
+                            <div class="contact-number">123</div>
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <svg class="phone-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                            width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                        </svg>
+                        <div>
+                            <div class="contact-name">Bomberos</div>
+                            <div class="contact-number">119</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-right">
+                <div class="footer-brand">
+                    <div class="footer-logo-icon">
+                        <svg fill="white" viewBox="0 0 24 24" width="24" height="24">
+                            <path
+                                d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
+                        </svg>
+                    </div>
+                    <span>PARKING EAFIT</span>
+                </div>
+                <p class="copyright">&copy; 2026 Universidad EAFIT. Todos los derechos reservados.</p>
+                <p class="address">Carrera 49 N&deg; 7 Sur-50 &middot; Medellín, Colombia</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script>
+        Chart.register(ChartDataLabels);
+        // --- LOGICA DE BASE DE DATOS ---
+        async function guardarCambioEnBaseDeDatos(celdaId, placa) {
+            const url = "{% url 'actualizar_celda' %}";
+            const data = { id: celdaId, placa: placa };
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.message || 'Error al guardar la información');
+                }
+                return true;
+            } catch (error) {
+                document.getElementById('modalAlert').innerHTML = `<strong>Aviso:</strong> ${error.message}`;
+                document.getElementById('modalAlert').classList.remove('d-none');
+                return false;
+            }
+        }
+
+        const isStaff = {{ user.is_staff|yesno:"true,false" }};
+        const spots = document.querySelectorAll('.spot');
+        const cellModal = new bootstrap.Modal(document.getElementById('cellModal'));
+        let currentSpot = null;
+
+        spots.forEach(spot => {
+            spot.addEventListener('click', function () {
+                if (!isStaff) return;
+                currentSpot = this;
+                const celdaNumero = this.dataset.numero;
+                const isOccupied = this.classList.contains('occupied');
+                
+                document.getElementById('modalCellNumber').textContent = celdaNumero;
+                document.getElementById('modalAlert').classList.add('d-none');
+                
+                const plateInput = document.getElementById('modalPlateInput');
+                const btnSave = document.getElementById('btnSaveCell');
+                const btnRelease = document.getElementById('btnReleaseCell');
+
+                if (isOccupied) {
+                    plateInput.value = this.dataset.placa || '';
+                    plateInput.disabled = true;
+                    btnSave.classList.add('d-none');
+                    btnRelease.classList.remove('d-none');
+                    btnRelease.classList.add('w-100');
+                } else {
+                    plateInput.value = '';
+                    plateInput.disabled = false;
+                    btnSave.classList.remove('d-none');
+                    btnRelease.classList.add('d-none');
+                }
+                
+                cellModal.show();
+            });
+        });
+
+        document.getElementById('cellForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btnSave = document.getElementById('btnSaveCell');
+            const btnRelease = document.getElementById('btnReleaseCell');
+            if (!btnSave.classList.contains('d-none')) {
+                btnSave.click();
+            } else if (!btnRelease.classList.contains('d-none')) {
+                btnRelease.click();
+            }
+        });
+
+        document.getElementById('modalPlateInput').addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase();
+            const val = this.value;
+            const plateFeedback = document.getElementById('plateFeedback');
+            if (val.length === 0) {
+                plateFeedback.textContent = 'Ingresa la placa del vehículo (Ej: ABC123).';
+                plateFeedback.className = 'form-text mt-2 text-muted';
+                this.style.borderColor = 'var(--gray-200)';
+            } else if (/^\d/.test(val)) {
+                plateFeedback.textContent = 'Las placas no inician con números. Ingresa 3 letras primero.';
+                plateFeedback.className = 'form-text mt-2 text-danger';
+                this.style.borderColor = 'var(--red)';
+            } else if (!/^[A-Z]{1,3}$/.test(val) && val.length <= 3) {
+                plateFeedback.textContent = 'Los primeros 3 caracteres deben ser letras.';
+                plateFeedback.className = 'form-text mt-2 text-danger';
+                this.style.borderColor = 'var(--red)';
+            } else if (val.length > 3 && !/^[A-Z]{3}\d{1,3}$/.test(val)) {
+                plateFeedback.textContent = 'Después de las 3 letras, debes ingresar 3 números.';
+                plateFeedback.className = 'form-text mt-2 text-danger';
+                this.style.borderColor = 'var(--red)';
+            } else if (val.length === 6 && !/^[A-Z]{3}\d{3}$/.test(val)) {
+                plateFeedback.textContent = 'Formato inválido. Debe ser 3 letras y 3 números exactos.';
+                plateFeedback.className = 'form-text mt-2 text-danger';
+                this.style.borderColor = 'var(--red)';
+            } else if (val.length === 6 && /^[A-Z]{3}\d{3}$/.test(val)) {
+                plateFeedback.textContent = 'Formato válido. Presiona Enter para registrar.';
+                plateFeedback.className = 'form-text mt-2 text-success fw-bold';
+                this.style.borderColor = 'var(--green)';
+            } else {
+                plateFeedback.textContent = 'Sigue escribiendo... (Faltan caracteres)';
+                plateFeedback.className = 'form-text mt-2 text-primary';
+                this.style.borderColor = 'var(--primary)';
+            }
+        });
+
+        document.getElementById('btnSaveCell').addEventListener('click', async () => {
+            if (!currentSpot) return;
+            const placa = document.getElementById('modalPlateInput').value.trim().toUpperCase();
+            const alertBox = document.getElementById('modalAlert');
+            
+            if (!/^[A-Z]{3}\d{3}$/.test(placa)) {
+                alertBox.innerHTML = `<strong>Error de Formato:</strong> La placa debe tener exactamente 3 letras seguidas de 3 números (Ej: ABC123).`;
+                alertBox.classList.remove('d-none');
+                return;
+            }
+
+            // Validar placa duplicada en el frontend
+            const existingSpot = document.querySelector(`.spot[data-placa="${placa}"]`);
+            if (existingSpot && existingSpot.dataset.id !== currentSpot.dataset.id) {
+                alertBox.innerHTML = `<strong>Acceso Denegado:</strong> El vehículo con placa ${placa} ya se encuentra registrado en la celda ${existingSpot.dataset.numero}.`;
+                alertBox.classList.remove('d-none');
+                return;
+            }
+
+            alertBox.classList.add('d-none');
+            const celdaId = currentSpot.dataset.id;
+            const btn = document.getElementById('btnSaveCell');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...';
+            btn.disabled = true;
+
+            const success = await guardarCambioEnBaseDeDatos(celdaId, placa);
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+
+            if (success) {
+                currentSpot.classList.replace('free', 'occupied');
+                currentSpot.dataset.placa = placa;
+                recordCellChange(currentSpot.dataset.numero);
+                updateCharts();
+                cellModal.hide();
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Ingreso registrado',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        });
+
+        document.getElementById('btnReleaseCell').addEventListener('click', async () => {
+            if (!currentSpot) return;
+            const celdaId = currentSpot.dataset.id;
+            const btn = document.getElementById('btnReleaseCell');
+            btn.disabled = true;
+
+            const success = await guardarCambioEnBaseDeDatos(celdaId, null);
+            
+            btn.disabled = false;
+
+            if (success) {
+                currentSpot.classList.replace('occupied', 'free');
+                currentSpot.dataset.placa = "";
+                recordCellChange(currentSpot.dataset.numero);
+                updateCharts();
+                cellModal.hide();
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'info',
+                    title: 'Celda liberada',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        });
+
+        // --- LÓGICA DE GRÁFICOS ---
+        // Se añade 'J' y 'K' al arreglo para que cuente las nuevas celdas
+        const cellChangeTimestamps = {};
+        const zones = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        zones.forEach(z => cellChangeTimestamps[z] = Date.now() - Math.random() * 1800000);
+
+        function recordCellChange(num) {
+            const z = num.charAt(0);
+            if (zones.includes(z)) cellChangeTimestamps[z] = Date.now();
+        }
+
+        function getOccupancyData() {
+            const data = {};
+            zones.forEach(z => data[z] = { free: 0, occupied: 0 });
+            spots.forEach(s => {
+                if (s.dataset.numero) {
+                    const z = s.dataset.numero.charAt(0);
+                    if (zones.includes(z)) {
+                        if (s.classList.contains('free')) data[z].free++;
+                        else data[z].occupied++;
+                    }
+                }
+            });
+            return data;
+        }
+
+        Chart.defaults.font.family = "'Inter', sans-serif";
+
+        const flowHours = ['6 AM', '8 AM', '10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM'];
+        const flowChart = new Chart(document.getElementById('waitTimeChart'), {
+            type: 'line',
+            data: { 
+                labels: flowHours, 
+                datasets: [
+                    { label: 'Entradas', data: [], borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', fill: true, tension: 0.4 },
+                    { label: 'Salidas', data: [], borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.4 }
+                ] 
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { legend: { position: 'top' }, datalabels: { display: false } }, 
+                scales: { x: { title: { display: true, text: 'Hora del Día' } }, y: { title: { display: true, text: 'Vehículos' } } } 
+            }
+        });
+
+        const availabilityChart = new Chart(document.getElementById('availabilityChart'), {
+            type: 'bar',
+            data: { labels: zones, datasets: [{ label: 'Ocupación %', data: [], backgroundColor: [], borderRadius: 4 }] },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { 
+                    legend: { display: false },
+                    datalabels: {
+                        color: '#475569',
+                        anchor: 'end',
+                        align: 'top',
+                        formatter: function(value) { return value > 0 ? value + '%' : ''; },
+                        font: { weight: 'bold' }
+                    }
+                },
+                scales: { 
+                    x: { title: { display: true, text: 'Zonas' } }, 
+                    y: { 
+                        title: { display: true, text: 'Ocupación (%)' },
+                        min: 0,
+                        max: 100
+                    } 
+                } 
+            }
+        });
+
+        const heatmapChart = new Chart(document.getElementById('lastChangeChart'), {
+            type: 'doughnut',
+            data: { 
+                labels: zones, 
+                datasets: [{ 
+                    label: 'Tiempo Promedio (horas)', 
+                    data: [], 
+                    backgroundColor: [], 
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    hoverOffset: 8
+                }] 
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                cutout: '70%',
+                plugins: { 
+                    legend: { 
+                        display: true, 
+                        position: 'right',
+                        labels: { usePointStyle: true, padding: 12, boxWidth: 8 }
+                    },
+                    datalabels: {
+                        color: '#ffffff',
+                        font: { weight: 'bold', size: 10 },
+                        formatter: function(value) { return value > 0 ? value + 'h' : ''; }
+                    }
+                }
+            }
+        });
+
+        function updateCharts() {
+            const occ = getOccupancyData();
+            const now = Date.now();
+
+            const bgColors = [];
+            const occupancyRates = zones.map(z => {
+                const total = occ[z].free + occ[z].occupied;
+                const rate = total > 0 ? (occ[z].occupied / total) * 100 : 0;
+                if (rate < 50) bgColors.push('#22c55e');
+                else if (rate <= 80) bgColors.push('#eab308');
+                else bgColors.push('#ef4444');
+                return Math.round(rate);
+            });
+
+            availabilityChart.data.datasets[0].data = occupancyRates;
+            availabilityChart.data.datasets[0].backgroundColor = bgColors;
+            availabilityChart.update();
+
+            let tf = 0, to = 0;
+            zones.forEach(z => { tf += occ[z].free; to += occ[z].occupied; });
+            document.getElementById('totalAvailable').textContent = tf;
+            document.getElementById('totalOccupied').textContent = to;
+            document.getElementById('occupancyRate').textContent = (tf + to) > 0 ? Math.round((to / (tf + to)) * 100) + '%' : '0%';
+
+            // Flujo de Tráfico Simulado - Perfectamente matemático con la ocupación real
+            const totalActualOcupados = to;
+            const rotacion = Math.floor(zones.length * 2.5); // Coches que ya entraron y salieron hoy
+            
+            const totalEntradasHoy = totalActualOcupados + rotacion;
+            const totalSalidasHoy = rotacion;
+            
+            const wIn = [0.2, 0.8, 1.0, 0.6, 0.5, 0.3, 0.2, 0.1]; // Picos en la mañana
+            const wOut = [0.1, 0.2, 0.3, 0.6, 0.8, 1.0, 0.6, 0.3]; // Picos en la tarde
+            
+            function distributeWeighted(total, weights) {
+                let res = new Array(weights.length).fill(0);
+                let seed = zones.length * 100; // Semilla determinista
+                for (let i = 0; i < total; i++) {
+                    let r = (Math.sin(seed++) * 10000); r = r - Math.floor(r);
+                    let sum = weights.reduce((a,b)=>a+b,0);
+                    let target = r * sum;
+                    let current = 0;
+                    for(let j=0; j<weights.length; j++){
+                        current += weights[j];
+                        if(target <= current) { res[j]++; break; }
+                    }
+                }
+                return res;
+            }
+            
+            const entradasData = distributeWeighted(totalEntradasHoy, wIn);
+            const salidasData = distributeWeighted(totalSalidasHoy, wOut);
+            
+            flowChart.data.datasets[0].data = entradasData;
+            flowChart.data.datasets[1].data = salidasData;
+            flowChart.update();
+            
+            const sumEntradas = entradasData.reduce((a, b) => a + b, 0);
+            const sumSalidas = salidasData.reduce((a, b) => a + b, 0);
+            document.getElementById('totalEntradas').textContent = sumEntradas;
+            document.getElementById('totalSalidas').textContent = sumSalidas;
+            const neto = sumEntradas - sumSalidas;
+            document.getElementById('flujoNeto').textContent = (neto > 0 ? '+' : '') + neto;
+
+            // Simulated Average Time Logic
+            const heatColors = [];
+            let verdes = 0, amarillas = 0, rojas = 0;
+            const avgTimes = zones.map((z, idx) => {
+                let baseTime = (occ[z].occupied > 0) ? (occ[z].occupied * 1.5) : 0.5;
+                if (baseTime > 12) baseTime = 12;
+                if (baseTime < 2) { heatColors.push('#22c55e'); verdes++; }
+                else if (baseTime < 6) { heatColors.push('#eab308'); amarillas++; }
+                else { heatColors.push('#ef4444'); rojas++; }
+                return Math.round(baseTime * 10) / 10;
+            });
+            
+            heatmapChart.data.datasets[0].data = avgTimes;
+            heatmapChart.data.datasets[0].backgroundColor = heatColors;
+            heatmapChart.update();
+            
+            document.getElementById('zonasVerdes').textContent = verdes;
+            document.getElementById('zonasAmarillas').textContent = amarillas;
+            document.getElementById('zonasRojas').textContent = rojas;
+        }
+
+        updateCharts();
+
+        function updateClock() {
+            var now = new Date();
+            var h = String(now.getHours()).padStart(2, '0');
+            var m = String(now.getMinutes()).padStart(2, '0');
+            var s = String(now.getSeconds()).padStart(2, '0');
+            var time = h + ':' + m + ':' + s;
+            var clockEl = document.getElementById('live-clock');
+            if (clockEl) clockEl.textContent = time;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+
+</html>

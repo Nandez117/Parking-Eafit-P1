@@ -1,0 +1,507 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PARKING EAFIT</title>
+    <link rel="icon" type="image/png" href="{% static 'logo.png' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="{% static 'styles.css' %}?v=2" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="sticky-header-container">
+        <div class="top-header">
+        <div class="top-header-inner">
+            <div class="logo-icon">
+                <img src="{% static 'logo.png' %}" alt="Logo EAFIT" style="height: 40px; width: auto;">
+            </div>
+            <div class="top-header-text">
+                <h1>PARKING EAFIT</h1>
+                <p>Sistema de Monitoreo en Tiempo Real</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="live-banner">
+        <span class="live-dot"></span>
+        <span class="live-icon">
+            <svg fill="white" viewBox="0 0 24 24" width="16" height="16">
+                <path
+                    d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" />
+            </svg>
+        </span>
+        <span>EN VIVO</span>
+        <span style="opacity:0.5">|</span>
+        <span id="live-clock">--:--:--</span>
+    </div>
+
+    <nav class="nav-bar d-flex justify-content-between align-items-center">
+        <div class="nav-left">
+            <div class="nav-brand d-flex align-items-center gap-2 fw-bold text-dark">
+                <div class="brand-icon d-flex">
+                    <img src="{% static 'logo.png' %}" alt="Logo EAFIT" style="height: 30px; width: auto;">
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-links d-flex gap-2">
+            <a href="{% url 'dashboard' %}" class="nav-link-item active">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Inicio
+            </a>
+            <a href="{% url 'p_central' %}" class="nav-link-item">P. Central</a>
+            <a href="{% url 'p_ingenieros' %}" class="nav-link-item">P. Ingenieros</a>
+            <a href="{% url 'p_idiomas' %}" class="nav-link-item">P. Idiomas</a>
+        </div>
+
+        <div class="nav-right d-flex align-items-center gap-2">
+            <div class="user-icon d-flex align-items-center">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
+                </svg>
+            </div>
+            {% if user.is_authenticated %}
+                {% if user.username == 'invitado_dummy' %}
+                    <form action="{% url 'logout' %}" method="post" class="m-0 p-0 d-flex align-items-center">
+                        {% csrf_token %}
+                        <button type="submit" class="fw-semibold" style="background:none; border:none; cursor:pointer; color:inherit; padding:0;">
+                            Iniciar Sesión
+                        </button>
+                    </form>
+                {% else %}
+                    <span class="user-info fw-semibold">{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</span>
+                    <form action="{% url 'logout' %}" method="post" class="m-0 p-0 d-flex align-items-center ms-2">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn d-flex align-items-center justify-content-center" title="Cerrar sesión" style="background:none; border:none; cursor:pointer; color:inherit;">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="20" height="20">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                            </svg>
+                        </button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="fw-semibold" style="text-decoration:none; color:inherit;">Iniciar Sesión</a>
+            {% endif %}
+        </div>
+    </nav>
+    </div>
+
+    <div class="container main-content mt-4">
+
+        <div class="section-header d-flex justify-content-between align-items-center border-bottom pb-3 mb-4 flex-wrap gap-3">
+            <div>
+                <h2 class="fs-4 fw-bold text-dark mb-1">Monitoreo de Parqueaderos</h2>
+                <p class="text-secondary mb-0">Estado en tiempo real de disponibilidad en campus EAFIT</p>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                {% if user.is_authenticated and not user.is_staff %}
+                <button onclick="buscarMiVehiculo()" class="btn btn-outline-primary d-flex align-items-center gap-2 rounded-pill shadow-sm bg-white" style="font-weight: 600;">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path>
+                    </svg>
+                    Buscar mi vehículo
+                </button>
+                {% endif %}
+                <div class="updated-badge bg-white border rounded-pill px-3 py-2 d-flex align-items-center shadow-sm">
+                    <span class="green-dot me-2"></span>
+                    <span class="text-secondary fw-semibold" style="font-size: 13px;">Actualizado: <span
+                            id="updated-time">--:--:--</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+
+            {% for p in parqueaderos %}
+            <div class="col-12 col-md-4">
+                <div class="card custom-parking-card border-0 shadow-sm h-100">
+                    <div class="card-header border-0 text-center py-3 custom-card-header bg-dark">
+                        <h5 class="mb-0 fw-bold text-white tracking-wide" style="letter-spacing: 1px;">
+                            {{ p.nombre_mayuscula }}
+                        </h5>
+                    </div>
+                    <div class="card-body text-center d-flex flex-column py-4 px-4">
+                        <h6 class="fw-bold text-dark mb-3">Parqueadero {{ p.nombre_titulo }}</h6>
+
+                        {% if 'Central' in p.nombre_titulo or 'CENTRAL' in p.nombre_mayuscula %}
+                        <a href="{% url 'p_central' %}">
+                            <img src="{% static 'central.png' %}" alt="Parqueadero Central"
+                                class="img-fluid rounded mb-4 shadow-sm"
+                                style="height: 180px; width: 100%; object-fit: cover; transition: transform 0.2s;"
+                                onmouseover="this.style.transform='scale(1.02)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                        </a>
+                        {% elif 'Ingenieros' in p.nombre_titulo or 'INGENIEROS' in p.nombre_mayuscula %}
+                        <a href="{% url 'p_ingenieros' %}">
+                            <img src="{% static 'ingenieros.png' %}" alt="Parqueadero Ingenieros"
+                                class="img-fluid rounded mb-4 shadow-sm"
+                                style="height: 180px; width: 100%; object-fit: cover; transition: transform 0.2s;"
+                                onmouseover="this.style.transform='scale(1.02)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                        </a>
+                        {% elif 'Idiomas' in p.nombre_titulo or 'IDIOMAS' in p.nombre_mayuscula %}
+                        <a href="{% url 'p_idiomas' %}">
+                            <img src="{% static 'idiomas.png' %}" alt="Parqueadero Idiomas"
+                                class="img-fluid rounded mb-4 shadow-sm"
+                                style="height: 180px; width: 100%; object-fit: cover; transition: transform 0.2s;"
+                                onmouseover="this.style.transform='scale(1.02)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                        </a>
+                        {% endif %}
+
+                        <div class="mb-1 text-dark">
+                            <span class="fs-6 me-1">Disponibles:</span>
+                            <span class="display-5 fw-bolder">{{ p.disponibles }}</span>
+                        </div>
+                        <p class="text-muted small mb-4">Ocupados: {{ p.ocupados }}</p>
+
+                        <div class="mt-auto">
+                            {% if p.estado == 'Lleno' %}
+                            <div
+                                class="indicator-btn bg-danger-subtle text-danger border border-danger-subtle rounded-2 py-2 fw-bold w-100">
+                                LLENO
+                            </div>
+                            {% else %}
+                            <div
+                                class="indicator-btn bg-success-subtle text-success border border-success-subtle rounded-2 py-2 fw-bold w-100">
+                                DISPONIBLE
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+
+
+{% if user.is_staff %}
+<div class="row mt-5">
+    <div class="col-12">
+        <div style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+            
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0d1b3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z"/>
+                </svg>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #0d1b3e; margin: 0;">Asistente IA de Parqueaderos</h3>
+                <span style="background: linear-gradient(135deg, #8b5cf6, #6366f1); color: #ffffff; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 20px;">BETA</span>
+            </div>
+
+            <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.5rem;">
+                Selecciona un parqueadero (o el comparativo de todos) y el periodo para generar un análisis inteligente.
+            </p>
+
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;" id="contenedor-chips">
+                {% for p in parqueaderos %}
+                <div class="ia-chip" data-id="{{ p.id }}" onclick="seleccionarChip(this, '{{ p.id }}')" 
+                     style="padding: 0.4rem 1.2rem; border: 1px solid #cbd5e1; border-radius: 20px; font-size: 0.9rem; font-weight: 500; cursor: pointer; color: #334155; background: #ffffff; transition: all 0.2s;">
+                    {{ p.nombre_titulo }}
+                </div>
+                {% endfor %}
+                <div class="ia-chip" data-id="todos" onclick="seleccionarChip(this, 'todos')" 
+                     style="padding: 0.4rem 1.2rem; border: 1.5px dashed #cbd5e1; border-radius: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: #6366f1; background: #ffffff; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
+                     Comparativo Global
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                <label style="font-weight: 600; color: #475569; font-size: 0.95rem; margin: 0;">Periodo:</label>
+                <select id="horas-select" class="form-select" style="width: auto; border-radius: 8px; border-color: #cbd5e1; color: #334155; font-size: 0.95rem; cursor: pointer;">
+                    <option value="6">Últimas 6 horas</option>
+                    <option value="12">Últimas 12 horas</option>
+                    <option value="24" selected>Últimas 24 horas</option>
+                    <option value="168">Última semana</option>
+                </select>
+
+                <button id="btn-generar" onclick="generarReporteIA()" style="background-color: #0d1b3e; color: #ffffff; border: none; border-radius: 8px; padding: 0.5rem 1.25rem; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background 0.2s;">
+                    Generar Reporte IA
+                </button>
+            </div>
+
+            <div id="reporte-output" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; color: #475569; font-size: 0.95rem; min-height: 100px; line-height: 1.6;">
+                El reporte aparecerá aquí. Selecciona una opción y haz clic en "Generar Reporte IA".
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Librería para generar el PDF de forma local -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+    // Variables globales
+    let idSeleccionado = "";
+
+    // Iniciar seleccionando el primer elemento
+    window.onload = function() {
+        const primerChip = document.querySelector('.ia-chip');
+        if(primerChip) {
+            seleccionarChip(primerChip, primerChip.getAttribute('data-id'));
+        }
+    };
+
+    // Función para efecto "oscurito"
+    function seleccionarChip(elemento, id) {
+        // Reiniciar todos los chips a su estado original
+        const chips = document.querySelectorAll('.ia-chip');
+        chips.forEach(chip => {
+            chip.style.backgroundColor = '#ffffff';
+            chip.style.color = chip.getAttribute('data-id') === 'todos' ? '#6366f1' : '#334155';
+            chip.style.borderColor = '#cbd5e1';
+        });
+
+        // Oscurecer el seleccionado
+        elemento.style.backgroundColor = '#0d1b3e';
+        elemento.style.color = '#ffffff';
+        elemento.style.borderColor = '#0d1b3e';
+        idSeleccionado = id;
+    }
+
+    // Función que conecta con el backend
+    async function generarReporteIA() {
+        const btn = document.getElementById('btn-generar');
+        const output = document.getElementById('reporte-output');
+        const horas = document.getElementById('horas-select').value;
+
+        if (!idSeleccionado) {
+            output.innerHTML = '<span style="color: red;"> Selecciona un parqueadero primero.</span>';
+            return;
+        }
+
+        // Estado de carga
+        btn.innerHTML = 'Generando... ';
+        btn.disabled = true;
+        output.innerHTML = '<i>Conectando con la Inteligencia Artificial... por favor espera.</i>';
+
+        const url_backend = (idSeleccionado === 'todos') ? '/ia/reporte/comparativo/' : '/ia/reporte/individual/';
+
+        try {
+            const response = await fetch(url_backend, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ parqueadero_id: idSeleccionado, horas: horas })
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const textoHTML = await blob.text();
+                
+                // Extraemos el contenido limpio
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(textoHTML, 'text/html');
+                const contenedor = doc.querySelector('.container') || doc.body;
+
+                // Guardamos el HTML completo globalmente para poder imprimirlo en PDF luego
+                window.ultimoReporteGenerado = textoHTML;
+
+                // Mostrar el reporte incrustado con el botón de PDF arriba
+                output.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <span style="color: green; font-weight: bold;">✅ Reporte Generado Exitosamente</span>
+                        <button onclick="guardarComoPDF()" style="background-color: #ffffff; color: #0d1b3e; border: 1.5px solid #0d1b3e; border-radius: 6px; padding: 0.5rem 1rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#0d1b3e'; this.style.color='#ffffff'" onmouseout="this.style.backgroundColor='#ffffff'; this.style.color='#0d1b3e'">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Guardar reporte en PDF
+                        </button>
+                    </div>
+                    <div id="contenido-reporte-pdf" style="border-top: 1px solid #e2e8f0; padding-top: 1.5rem; background: white; padding: 1.5rem;">
+                        ${contenedor ? contenedor.innerHTML : textoHTML}
+                    </div>
+                `;
+
+            } else {
+                const errorData = await response.json();
+                output.innerHTML = `<span style="color: red; font-weight: bold;">Error del servidor: ${errorData.error}</span>`;
+            }
+        } catch (error) {
+            output.innerHTML = `<span style="color: red; font-weight: bold;">Fallo de conexión: ${error.message}</span>`;
+        } finally {
+            btn.innerHTML = 'Generar Reporte IA';
+            btn.disabled = false;
+        }
+    }
+
+    // Función que utiliza html2pdf para descargar el archivo directamente a la máquina local
+    window.guardarComoPDF = function() {
+        // Tomamos el elemento que ya está visible y renderizado en la pantalla
+        const elementoFisico = document.getElementById('contenido-reporte-pdf');
+        
+        if (!elementoFisico) {
+            alert("No hay reporte para descargar.");
+            return;
+        }
+
+        // Forzamos temporalmente colores explícitos para evitar que html2canvas capture fondos transparentes
+        const colorOriginal = elementoFisico.style.color;
+        const bgOriginal = elementoFisico.style.background;
+        elementoFisico.style.color = '#000000';
+        elementoFisico.style.background = '#ffffff';
+
+        // Configuraciones de alta calidad para el PDF
+        const opciones = {
+            margin:       0.5,
+            filename:     (idSeleccionado === 'todos') ? 'Reporte_Global_Parking_EAFIT.pdf' : 'Reporte_Parqueadero_EAFIT.pdf',
+            image:        { type: 'jpeg', quality: 1 },
+            // scrollY: 0 es CRÍTICO. Evita que html2canvas capture un área en blanco si el usuario ha bajado por la página.
+            html2canvas:  { scale: 2, useCORS: true, scrollY: 0, windowWidth: document.documentElement.offsetWidth },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        // Generar y guardar el PDF directamente
+        html2pdf().set(opciones).from(elementoFisico).save().then(() => {
+            // Restauramos los estilos una vez guardado
+            elementoFisico.style.color = colorOriginal;
+            elementoFisico.style.background = bgOriginal;
+        });
+    };
+</script>
+
+
+            
+        </div>
+    </div>
+</div>
+{% endif %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="help-card-horizontal shadow-sm">
+                    <div class="help-content-wrapper">
+                        <div class="help-icon-section">
+                            <div class="help-question-icon">?</div>
+                        </div>
+                        <div class="help-text-section">
+                            <h3>¿Necesitas ayuda con el sistema?</h3>
+                            <p>Si tienes problemas con el monitoreo de parqueaderos, consulta las preguntas frecuentes o
+                                contacta a soporte técnico para asistencia inmediata.</p>
+                        </div>
+                        <div class="help-action-section">
+                            <a href="mailto:soporte@eafit.edu.co" class="btn-support-alt">Contactar Soporte</a>
+                            <a href="#" class="faq-link-alt">Preguntas frecuentes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="site-footer mt-5">
+        <div class="container footer-inner">
+            <div class="footer-left">
+                <h4>LÍNEAS DE EMERGENCIA</h4>
+                <div class="footer-contact">
+                    <div class="footer-contact-item">
+                        <svg class="phone-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                            width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                        </svg>
+                        <div>
+                            <div class="contact-name">Seguridad EAFIT</div>
+                            <div class="contact-number">(604) 261 9500 Ext. 9282</div>
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <svg class="phone-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                            width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                        </svg>
+                        <div>
+                            <div class="contact-name">Emergencias Medellín</div>
+                            <div class="contact-number">123</div>
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <svg class="phone-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                            width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                        </svg>
+                        <div>
+                            <div class="contact-name">Bomberos</div>
+                            <div class="contact-number">119</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-right">
+                <div class="footer-brand">
+                    <div class="footer-logo-icon">
+                        <svg fill="white" viewBox="0 0 24 24" width="24" height="24">
+                            <path
+                                d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
+                        </svg>
+                    </div>
+                    <span>PARKING EAFIT</span>
+                </div>
+                <p class="copyright">&copy; 2026 Universidad EAFIT. Todos los derechos reservados.</p>
+                <p class="address">Carrera 49 N&deg; 7 Sur-50 &middot; Medellín, Colombia</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function updateClock() {
+            var now = new Date();
+            var h = String(now.getHours()).padStart(2, '0');
+            var m = String(now.getMinutes()).padStart(2, '0');
+            var s = String(now.getSeconds()).padStart(2, '0');
+            var time = h + ':' + m + ':' + s;
+            document.getElementById('live-clock').textContent = time;
+            document.getElementById('updated-time').textContent = time;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        {% if user.is_authenticated and not user.is_staff %}
+        async function buscarMiVehiculo() {
+            try {
+                const response = await fetch("{% url 'buscar_vehiculo' %}");
+                const data = await response.json();
+                
+                if (data.status === 'ok') {
+                    Swal.fire({
+                        title: '¡Vehículo encontrado!',
+                        html: `Tu vehículo con placa <b>${data.placa}</b> se encuentra en el <b>Parqueadero ${data.parqueadero}</b>, celda <b>${data.celda}</b>.`,
+                        icon: 'success',
+                        confirmButtonColor: '#0d1b3e'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Búsqueda fallida',
+                        text: data.message,
+                        icon: 'info',
+                        confirmButtonColor: '#0d1b3e'
+                    });
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Hubo un problema al buscar tu vehículo.', 'error');
+            }
+        }
+        {% endif %}
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
