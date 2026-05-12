@@ -111,7 +111,7 @@
                 <p class="text-secondary mb-0">Estado en tiempo real de disponibilidad en campus EAFIT</p>
             </div>
             <div class="d-flex align-items-center gap-3">
-                {% if user.is_authenticated and not user.is_staff %}
+                {% if user.is_authenticated and user.username != 'invitado_dummy' %}
                 <button onclick="buscarMiVehiculo()" class="btn btn-outline-primary d-flex align-items-center gap-2 rounded-pill shadow-sm bg-white" style="font-weight: 600;">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path>
