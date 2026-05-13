@@ -120,7 +120,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # Gemini API Key
-GEMINI_API_KEY = 'AIzaSyDdyn6YzgqzfZQLCZAEYk5GOssmIW-031A'
+GEMINI_API_KEY = 'AIzaSyCOyiRuc6bPNM6V3CZ_3Gr7sdU2E7UK8fk'
 
 # --- Autenticación ---
 LOGIN_URL = 'login'
